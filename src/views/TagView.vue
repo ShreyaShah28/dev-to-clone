@@ -6,33 +6,20 @@ import ArticleCard from '../components/ArticleCard.vue'
 import LoadingView from './LoadingView.vue'
 
 const route = useRoute()
-// const tagname = computed(() => route.params.tag)
 const articleStore = useArticleStore()
-const tagArticles = computed(() => articleStore.currentTagArticles)
+const tagArticles = computed(() => articleStore.filteredArticles)
 
-// async function loadInitialData() {
-//   articleStore.isLoading = true
-//   try {
-//     const temp = await articleStore.fetchTagArticles(route.params.tag)
-//     console.log('CurrentTagArticles: ', temp)
-//   } catch (err) {
-//     console.log(err)
-//   } finally {
-//     articleStore.isLoading = false
-//   }
-// }
 watch(
   () => route.params.tag,
   async (newTag) => {
     articleStore.isLoading = true
     if (newTag) {
-      await articleStore.fetchTagArticles(newTag as string)
+      await articleStore.fetchTagArticles(route.params.tag, newTag as string)
     }
     articleStore.isLoading = false
   },
   { immediate: true } // runs first time also
 )
-// loadInitialData()
 </script>
 
 <template>
@@ -44,7 +31,7 @@ watch(
       <p class="text-gray-500 italic">#</p>
       <p class="font-semibold">{{ route.params.tag }}</p>
     </div>
-    <div class="grid grid-cols-1 gap-5 p-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 p-5">
       <ArticleCard v-for="article in tagArticles" :key="article.id" :article="article" />
     </div>
   </div>

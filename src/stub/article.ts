@@ -19,9 +19,3 @@ export const currentArticle = {
     title: '',
     user: user
 }
-export const currentUserArticles = {
-    user: user
-}
-export const currentTagArticles = {
-    user: user
-}

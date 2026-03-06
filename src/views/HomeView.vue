@@ -12,7 +12,10 @@ onMounted(() => {
 })
 </script>
 <template>
-  <div class="grid grid-cols-1 gap-5 p-5" v-if="articles.length !== 0">
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 p-5"
+    v-if="articles.length !== 0"
+  >
     <ArticleCard v-for="article in articles" :key="article.id" :article="article" />
   </div>
   <div

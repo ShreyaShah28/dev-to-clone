@@ -5,8 +5,11 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 </script>
 <template>
-  <HeaderView class="sticky top-0 z-50 bg-white shadow h-18" v-if="route.path === '/'" />
-  <div class="bg-gray-200">
+  <HeaderView
+    class="sticky top-0 z-50 bg-white shadow h-32 sm:h-18"
+    v-if="route.name !== 'article'"
+  />
+  <div class="h-full w-full">
     <router-view />
   </div>
 </template>

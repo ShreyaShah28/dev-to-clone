@@ -12,7 +12,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="bg-gray-50 p-5 rounded-md">
+  <div class="bg-gray-50 p-5 rounded-md h-fit">
     <router-link :to="`/user/${article.user.username}`">
       <div class="flex flex-row items-center gap-3">
         <img :src="article.user.profile_image_90" alt="" class="rounded-full h-8 w-8" />
@@ -23,26 +23,40 @@ const props = defineProps({
       </div>
     </router-link>
     <div class="flex flex-col justify-between ml-8">
-      <p class="p-2 pr-8 text-3xl font-semibold hover:text-blue-800/90">
-        <router-link :to="`/article/${article.id}`">
+      <router-link :to="`/article/${article.id}`">
+        <p class="p-2 pr-8 text-3xl font-semibold hover:text-blue-800/90">
           {{ article.title }}
-        </router-link>
-      </p>
-      <div class="flex flex-wrap sm:flex-row gap-2 sm:gap-5">
-        <button
-          v-for="(tag, index) in article.tag_list"
-          :class="articleStore.buttonColorClass[index]"
-          class="text-sm py-2 px-3 rounded-md"
-        >
+        </p>
+      </router-link>
+      <div class="flex flex-wrap gap-2 sm:gap-5">
+        <div v-for="(tag, index) in article.tag_list" class="">
           <router-link :to="`/tag/${tag}`">
-            <span>#</span><span class="text-black/80">{{ tag }}</span>
+            <button
+              :class="articleStore.buttonColorClass[index]"
+              class="text-sm py-2 px-3 rounded-md"
+            >
+              <span>#</span><span class="text-black/80">{{ tag }}</span>
+            </button>
           </router-link>
-        </button>
+        </div>
       </div>
       <div class="flex flex-row justify-between">
-        <div class="flex flex-row gap-1 items-center text-sm text-gray-600">
-          <i class="fa-regular fa-comment text-lg p-1"></i>
-          <span>{{ `${article.comments_count} comments` }}</span>
+        <div class="flex flex-row gap-3">
+          <div class="flex flex-row gap-1 items-center text-sm text-gray-600">
+            <i
+              class="fa-heart text-xl"
+              :class="
+                article.positive_reactions_count !== 0
+                  ? 'fa-solid text-red-500'
+                  : 'fa-regular text-gray-400'
+              "
+            ></i>
+            <span>{{ `${article.positive_reactions_count}` }}</span>
+          </div>
+          <div class="flex flex-row gap-1 items-center text-sm text-gray-600">
+            <i class="fa-regular fa-comment text-lg"></i>
+            <span>{{ `${article.comments_count}` }}</span>
+          </div>
         </div>
         <div class="flex flex-row items-center text-sm text-gray-500">
           <span>{{ `${article.reading_time_minutes} min read` }}</span>
