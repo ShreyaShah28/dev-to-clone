@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, watch } from 'vue'
+import { watch } from 'vue'
 import { useArticleStore } from '../stores/article'
 import { useRoute } from 'vue-router'
 import ArticleCard from '../components/ArticleCard.vue'
@@ -7,12 +7,12 @@ import LoadingView from './LoadingView.vue'
 
 const route = useRoute()
 const articleStore = useArticleStore()
-const tagArticles = computed(() => articleStore.filteredArticles)
 
 watch(
   () => route.params.tag,
   async (newTag) => {
     articleStore.isLoading = true
+    articleStore.filterType = ''
     if (newTag) {
       await articleStore.fetchTagArticles(route.params.tag, newTag as string)
     }
@@ -32,7 +32,7 @@ watch(
       <p class="font-semibold">{{ route.params.tag }}</p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 p-5">
-      <ArticleCard v-for="article in tagArticles" :key="article.id" :article="article" />
+      <ArticleCard />
     </div>
   </div>
 </template>

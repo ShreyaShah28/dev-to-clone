@@ -2,10 +2,13 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import { currentArticle, user } from '../stub/article'
 
-export const useArticleStore = defineStore('task', {
+export const useArticleStore = defineStore('article', {
 
     state: () => ({
         isLoading: false,
+        isVisible: false,
+        filterType:'',
+        articleIndex: 19,
         page: 1,
         searchQuery: '',
         urlString: '',
@@ -38,22 +41,26 @@ export const useArticleStore = defineStore('task', {
         }
     },
     actions: {
-        fetchArticles(filterType: string, loadMore: boolean = false) {
-            return new Promise((resolve, reject) => {
-                let url = `https://dev.to/api/articles?page=${this.page}&per_page=10`
-                if (filterType === "new") {
-                    url = `https://dev.to/api/articles?page=${this.page}&per_page=10&state=fresh`
-                }
+        fetchArticles( loadMore: boolean = false) {
+            if (this.isLoading) return
 
-                if (filterType === "top") {
-                    url = `https://dev.to/api/articles?page=${this.page}&per_page=10&top=30`
+            this.isLoading = true
+            return new Promise((resolve, reject) => {
+                let url = `https://dev.to/api/articles?page=${this.page}&per_page=20`
+                if (this.filterType === "new") {
+                    url = `https://dev.to/api/articles?page=${this.page}&per_page=20&state=fresh`
+                }
+                if (this.filterType === "top") {
+                    url = `https://dev.to/api/articles?page=${this.page}&per_page=20&top=30`
                 }
                 axios
                     .get(url)
                     .then((response) => {
                         if (loadMore) {
                             // append articles (infinite scroll)
-                            this.articles.push(...response.data)
+                            setTimeout(() => {
+                                this.articles.push(...response.data)
+                            }, 1000)
                         } else {
                             // replace articles (first load / filter change)
                             this.articles = response.data
@@ -68,6 +75,7 @@ export const useArticleStore = defineStore('task', {
                     })
                     .finally(() => {
                         console.log(this.articles)
+                        this.isLoading = false
                     })
             })
         },
@@ -90,14 +98,14 @@ export const useArticleStore = defineStore('task', {
                     })
             })
         },
-        filterUsers(filterType: string) {
-            if (filterType === "top") {
+        filterUsers() {
+            if (this.filterType === "top") {
                 this.articles = this.articles.sort(
                     (a, b) => b.public_reactions_count - a.public_reactions_count
                 )
             }
 
-            if (filterType === "new") {
+            if (this.filterType === "new") {
                 this.articles = this.articles.sort(
                     (a, b) => new Date(b.published_at) - new Date(a.published_at)
                 )
@@ -121,13 +129,13 @@ export const useArticleStore = defineStore('task', {
                     })
             })
         },
-        fetchTagArticles(tag: any, filterType: string) {
+        fetchTagArticles(tag: any) {
             return new Promise((resolve, reject) => {
                 let url = `https://dev.to/api/articles?tag=${tag}`
-                if (filterType === "new") {
+                if (this.filterType === "new") {
                     url = `https://dev.to/api/articles?tag=${tag}&state=fresh`
                 }
-                else if (filterType === "top") {
+                else if (this.filterType === "top") {
                     url = `https://dev.to/api/articles?tag=${tag}&top=30`
                 }
                 axios

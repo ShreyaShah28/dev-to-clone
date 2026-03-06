@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-// const gridLength = ['', '', '', '', '', '', '', '', '']
 const gridLength = Array(9).fill(null)
 const route = useRoute()
 

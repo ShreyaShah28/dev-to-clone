@@ -7,11 +7,11 @@ import LoadingView from './LoadingView.vue'
 
 const route = useRoute()
 const articleStore = useArticleStore()
-const userArticles = computed(() => articleStore.filteredArticles)
 const userInformation = computed(() => articleStore.currentUserInformation)
 
 async function loadInitialData() {
   articleStore.isLoading = true
+  articleStore.filterType = ''
   const temp = await articleStore.fetchUserArticles(route.params.username)
   console.log('CurrentUsersArticles: ', temp)
   articleStore.isLoading = false
@@ -52,7 +52,7 @@ loadInitialData()
       </div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 p-5">
-      <ArticleCard v-for="article in userArticles" :key="article.id" :article="article" />
+      <ArticleCard />
     </div>
   </div>
 </template>

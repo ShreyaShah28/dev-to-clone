@@ -8,22 +8,20 @@ const route = useRoute()
 const currentFilter = ref('')
 
 function setFilter(filter: string) {
+  articleStore.filterType = filter
   currentFilter.value = filter
 }
 
-function activeButton(filter: string) {
-  return currentFilter.value === filter
-    ? 'px-4 py-2 font-semibold border-b-2 border-black dark:border-white'
-    : 'px-4 py-2 text-gray-500 hover:text-black dark:hover:text-white'
-}
 const articleStore = useArticleStore()
 
 watch(currentFilter, () => {
+  articleStore.page = 1
+  articleStore.articles = []
   articleStore.isLoading = true
-  if (route.name === 'home') articleStore.fetchArticles(currentFilter.value)
+  if (route.name === 'home') articleStore.fetchArticles(articleStore.filterType)
   else if (route.name === 'tag')
-    articleStore.fetchTagArticles(route.params.tag, currentFilter.value)
-  else if (route.name === 'user') articleStore.filterUsers(currentFilter.value)
+    articleStore.fetchTagArticles(route.params.tag, articleStore.filterType)
+  else if (route.name === 'user') articleStore.filterUsers(articleStore.filterType)
   articleStore.isLoading = false
 })
 </script>
@@ -46,18 +44,10 @@ watch(currentFilter, () => {
       />
     </div>
     <div class="flex flex-row gap-5 ml-2">
-      <button
-        @click="setFilter('new')"
-        :class="activeButton('new')"
-        class="py-2 px-5 shadow-xl/20 shadow-gray-800"
-      >
+      <button @click="setFilter('new')" class="py-2 px-5 shadow-xl/20 shadow-gray-800">
         NEW
       </button>
-      <button
-        @click="setFilter('top')"
-        :class="activeButton('top')"
-        class="py-2 px-5 shadow-xl/20 shadow-gray-800"
-      >
+      <button @click="setFilter('top')" class="py-2 px-5 shadow-xl/20 shadow-gray-800">
         TOP
       </button>
     </div>
