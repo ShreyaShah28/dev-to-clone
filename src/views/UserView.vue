@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useArticleStore } from '../stores/article'
 import { useRoute } from 'vue-router'
 import ArticleCard from '../components/ArticleCard.vue'
@@ -8,16 +8,27 @@ import LoadingView from './LoadingView.vue'
 const route = useRoute()
 const articleStore = useArticleStore()
 const userInformation = computed(() => articleStore.currentUserInformation)
+const loadTrigger = ref<HTMLElement | null>(null)
+const loading = computed(() => articleStore.isLoading)
 
-async function loadInitialData() {
-  articleStore.isLoading = true
-  articleStore.filterType = ''
-  const temp = await articleStore.fetchUserArticles(route.params.username)
-  console.log('CurrentUsersArticles: ', temp)
-  articleStore.isLoading = false
+function setupObserver() {
+  const observer = new IntersectionObserver(async (entries) => {
+    if (entries[0].isIntersecting) {
+      await articleStore.fetchUserArticles(route.params.username, true)
+    }
+  })
+
+  if (loadTrigger.value) {
+    observer.observe(loadTrigger.value)
+  }
 }
 
-loadInitialData()
+onMounted(async () => {
+  articleStore.page = 1
+  articleStore.filterType = ''
+  articleStore.articles = []
+  setupObserver()
+})
 </script>
 
 <template>
@@ -54,5 +65,8 @@ loadInitialData()
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 p-5">
       <ArticleCard />
     </div>
+    <div v-if="loading" class="loading">Loading more posts...</div>
+
+    <div ref="loadTrigger" class="h-10"></div>
   </div>
 </template>

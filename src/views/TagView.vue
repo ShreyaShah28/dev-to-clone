@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useArticleStore } from '../stores/article'
 import { useRoute } from 'vue-router'
 import ArticleCard from '../components/ArticleCard.vue'
@@ -7,6 +7,27 @@ import LoadingView from './LoadingView.vue'
 
 const route = useRoute()
 const articleStore = useArticleStore()
+const loadTrigger = ref<HTMLElement | null>(null)
+const loading = computed(() => articleStore.isLoading)
+
+function setupObserver() {
+  const observer = new IntersectionObserver(async (entries) => {
+    if (entries[0].isIntersecting) {
+      await articleStore.fetchTagArticles(route.params.username, true)
+    }
+  })
+
+  if (loadTrigger.value) {
+    observer.observe(loadTrigger.value)
+  }
+}
+
+onMounted(async () => {
+  articleStore.page = 1
+  articleStore.filterType = ''
+  articleStore.articles = []
+  setupObserver()
+})
 
 watch(
   () => route.params.tag,
@@ -14,7 +35,7 @@ watch(
     articleStore.isLoading = true
     articleStore.filterType = ''
     if (newTag) {
-      await articleStore.fetchTagArticles(route.params.tag, newTag as string)
+      setupObserver()
     }
     articleStore.isLoading = false
   },
@@ -34,5 +55,8 @@ watch(
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 p-5">
       <ArticleCard />
     </div>
+    <div v-if="loading" class="loading">Loading more posts...</div>
+
+    <div ref="loadTrigger" class="h-10"></div>
   </div>
 </template>

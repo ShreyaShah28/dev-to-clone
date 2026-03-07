@@ -4,14 +4,6 @@ import { useArticleStore } from '../stores/article'
 
 const articleStore = useArticleStore()
 const articles = computed(() => articleStore.filteredArticles)
-
-// function loadMore(isVisible: boolean, entry: any) {
-//   console.log(entry)
-//   // if (!isVisible) return
-//   // articleStore.page += 1
-//   // articleStore.fetchArticles(true)
-// }
-
 function visibilityChanged(isVisible, entry) {
   articleStore.isVisible = isVisible
   console.log(entry)

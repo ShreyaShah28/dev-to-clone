@@ -1,23 +1,16 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useArticleStore } from '../stores/article'
 import ArticleCard from '../components/ArticleCard.vue'
 
 const articleStore = useArticleStore()
 const loadTrigger = ref<HTMLElement | null>(null)
-
-function loadMore() {
-  if (articleStore.isLoading || !articleStore.hasMore) return
-
-  articleStore.isLoading = true
-  articleStore.fetchArticles(true)
-  articleStore.isLoading = false
-}
+const loading = computed(() => articleStore.isLoading)
 
 function setupObserver() {
-  const observer = new IntersectionObserver((entries) => {
+  const observer = new IntersectionObserver(async (entries) => {
     if (entries[0].isIntersecting) {
-      loadMore()
+      await articleStore.fetchArticles(true)
     }
   })
 
@@ -29,7 +22,7 @@ function setupObserver() {
 onMounted(async () => {
   articleStore.page = 1
   articleStore.filterType = ''
-  await articleStore.fetchArticles()
+  articleStore.articles = []
   setupObserver()
 })
 </script>
@@ -38,14 +31,10 @@ onMounted(async () => {
     <div class="flex flex-col" v-if="articleStore.filteredArticles.length !== 0">
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 p-5">
         <ArticleCard />
-        <!-- <div
-          class="h-20 flex justify-center items-center"
-          v-observe-visibility="
-            articleStore.articleIndex === articles.length - 1 ? loadMore : false
-          "
-        ></div> -->
       </div>
-      <div ref="loadTrigger" class="h-10"></div>
     </div>
+    <div v-if="loading" class="loading">Loading more posts...</div>
+
+    <div ref="loadTrigger" class="h-10"></div>
   </div>
 </template>
