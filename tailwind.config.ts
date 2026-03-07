@@ -7,5 +7,8 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+  // '~/plugins/vue-placeholders.js',
+  // '~/plugins/vue-observe-visibility.client.js'
+]
 }

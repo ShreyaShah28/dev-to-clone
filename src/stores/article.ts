@@ -7,7 +7,8 @@ export const useArticleStore = defineStore('article', {
     state: () => ({
         isLoading: false,
         isVisible: false,
-        filterType:'',
+        hasMore: true,
+        filterType: '',
         articleIndex: 19,
         page: 1,
         searchQuery: '',
@@ -41,7 +42,7 @@ export const useArticleStore = defineStore('article', {
         }
     },
     actions: {
-        fetchArticles( loadMore: boolean = false) {
+        fetchArticles(loadMore: boolean = false) {
             if (this.isLoading) return
 
             this.isLoading = true
@@ -59,15 +60,14 @@ export const useArticleStore = defineStore('article', {
                         if (loadMore) {
                             // append articles (infinite scroll)
                             setTimeout(() => {
-                                this.articles.push(...response.data)
+                                if (response.data)
+                                    this.articles.push(...response.data)
+                                else this.hasMore = false
                             }, 1000)
                         } else {
                             // replace articles (first load / filter change)
                             this.articles = response.data
                         }
-
-                        this.page++
-
                         resolve(response)
                     })
                     .catch((err) => {

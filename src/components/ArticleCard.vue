@@ -5,12 +5,17 @@ import { useArticleStore } from '../stores/article'
 const articleStore = useArticleStore()
 const articles = computed(() => articleStore.filteredArticles)
 
-function loadMore(isVisible: boolean, entry) {
-  console.log('visible', isVisible)
-  if (!isVisible) return
+// function loadMore(isVisible: boolean, entry: any) {
+//   console.log(entry)
+//   // if (!isVisible) return
+//   // articleStore.page += 1
+//   // articleStore.fetchArticles(true)
+// }
 
-  articleStore.page += 1
-  articleStore.fetchArticles(true)
+function visibilityChanged(isVisible, entry) {
+  articleStore.isVisible = isVisible
+  console.log(entry)
+  console.log('Hello')
 }
 </script>
 
@@ -18,7 +23,7 @@ function loadMore(isVisible: boolean, entry) {
   <div
     v-for="(article, index) in articles"
     :key="article.id"
-    v-observe-visibility="index === articles.length - 1 ? loadMore : false"
+    v-observe-visibility="index === articles.length - 1 ? visibilityChanged : false"
   >
     <div class="bg-gray-50 p-5 rounded-md h-fit">
       <router-link :to="`/user/${article.user.username}`">
@@ -37,7 +42,7 @@ function loadMore(isVisible: boolean, entry) {
           </p>
         </router-link>
         <div class="flex flex-wrap gap-2 sm:gap-5">
-          <div v-for="(tag, index) in article.tag_list" class="">
+          <div v-for="(tag, index) in article.tag_list" :key="tag" class="">
             <router-link :to="`/tag/${tag}`">
               <button
                 :class="articleStore.buttonColorClass[index]"

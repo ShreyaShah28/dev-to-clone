@@ -1,14 +1,36 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useArticleStore } from '../stores/article'
 import ArticleCard from '../components/ArticleCard.vue'
 
 const articleStore = useArticleStore()
+const loadTrigger = ref<HTMLElement | null>(null)
 
-onMounted(() => {
+function loadMore() {
+  if (articleStore.isLoading || !articleStore.hasMore) return
+
+  articleStore.isLoading = true
+  articleStore.fetchArticles(true)
+  articleStore.isLoading = false
+}
+
+function setupObserver() {
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      loadMore()
+    }
+  })
+
+  if (loadTrigger.value) {
+    observer.observe(loadTrigger.value)
+  }
+}
+
+onMounted(async () => {
   articleStore.page = 1
   articleStore.filterType = ''
-  articleStore.fetchArticles()
+  await articleStore.fetchArticles()
+  setupObserver()
 })
 </script>
 <template>
@@ -23,12 +45,7 @@ onMounted(() => {
           "
         ></div> -->
       </div>
-    </div>
-    <div
-      class="text-6xl font-stretch-extra-condensed w-screen h-screen flex justify-center pt-[10%] font-serif text-gray-700"
-      v-else
-    >
-      <p>No articles found!</p>
+      <div ref="loadTrigger" class="h-10"></div>
     </div>
   </div>
 </template>

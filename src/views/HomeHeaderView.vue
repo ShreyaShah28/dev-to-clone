@@ -18,10 +18,9 @@ watch(currentFilter, () => {
   articleStore.page = 1
   articleStore.articles = []
   articleStore.isLoading = true
-  if (route.name === 'home') articleStore.fetchArticles(articleStore.filterType)
-  else if (route.name === 'tag')
-    articleStore.fetchTagArticles(route.params.tag, articleStore.filterType)
-  else if (route.name === 'user') articleStore.filterUsers(articleStore.filterType)
+  if (route.name === 'home') articleStore.fetchArticles()
+  else if (route.name === 'tag') articleStore.fetchTagArticles(route.params.tag)
+  else if (route.name === 'user') articleStore.filterUsers()
   articleStore.isLoading = false
 })
 </script>
