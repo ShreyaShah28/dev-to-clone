@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-const gridLength = Array(9).fill(null)
+import { ContentLoader } from 'vue-content-loader'
+
+const gridLength = Array.from({ length: 9 })
 const route = useRoute()
 
 const loadStatus = computed(() => route.name)
@@ -11,72 +13,84 @@ const loadStatus = computed(() => route.name)
     class="flex flex-col justify-center items-center gap-5 w-full"
     v-if="loadStatus === 'article'"
   >
-    <div class="animate-pulse bg-gray-300 w-full md:w-3/4 xl:w-1/2 h-80 mt-10"></div>
-    <div class="flex flex-col px-10 w-full md:w-3/4 xl:w-1/2 gap-10">
-      <div class="flex flex-row gap-5">
-        <div class="animate-pulse bg-gray-300 w-18 h-18 rounded-full"></div>
-        <div class="flex flex-col justify-around">
-          <div class="animate-pulse bg-gray-300 w-28 h-4 rounded-lg"></div>
-          <div class="animate-pulse bg-gray-300 w-24 h-3 rounded-lg"></div>
-        </div>
-      </div>
-      <div class="flex flex-col gap-5">
-        <div class="animate-pulse bg-gray-300 w-full h-20 rounded-lg"></div>
-        <div class="flex flex-row justify-between w-4/5">
-          <div class="animate-pulse bg-gray-300 w-1/6 h-5 rounded-lg"></div>
-          <div class="animate-pulse bg-gray-300 w-1/6 h-5 rounded-lg"></div>
-          <div class="animate-pulse bg-gray-300 w-1/6 h-5 rounded-lg"></div>
-          <div class="animate-pulse bg-gray-300 w-1/6 h-5 rounded-lg"></div>
-        </div>
-        <div class="animate-pulse bg-gray-300 w-1/6 h-5 rounded-lg"></div>
-        <div class="animate-pulse bg-gray-300 w-full h-5 rounded-lg"></div>
-        <div class="animate-pulse bg-gray-300 w-1/2 h-5 rounded-lg"></div>
-        <div class="animate-pulse bg-gray-300 w-1/2 h-5 rounded-lg"></div>
-        <div class="animate-pulse bg-gray-300 w-1/6 h-5 rounded-lg"></div>
-        <div class="animate-pulse bg-gray-300 w-full h-5 rounded-lg"></div>
-        <div class="animate-pulse bg-gray-300 w-1/2 h-5 rounded-lg"></div>
-        <div class="animate-pulse bg-gray-300 w-1/2 h-5 rounded-lg"></div>
-      </div>
-    </div>
+    <ContentLoader viewBox="0 0 800 600" height="600" width="800">
+      <!-- cover image -->
+      <rect x="0" y="0" rx="8" ry="8" width="800" height="220" />
+
+      <!-- author avatar -->
+      <circle cx="40" cy="270" r="30" />
+
+      <!-- author name -->
+      <rect x="90" y="250" rx="4" ry="4" width="150" height="12" />
+
+      <!-- publish date -->
+      <rect x="90" y="270" rx="4" ry="4" width="120" height="10" />
+
+      <!-- article title -->
+      <rect x="0" y="320" rx="6" ry="6" width="600" height="22" />
+
+      <!-- tags -->
+      <rect x="0" y="360" rx="4" ry="4" width="80" height="12" />
+      <rect x="100" y="360" rx="4" ry="4" width="80" height="12" />
+      <rect x="200" y="360" rx="4" ry="4" width="80" height="12" />
+      <rect x="300" y="360" rx="4" ry="4" width="80" height="12" />
+
+      <!-- article text lines -->
+      <rect x="0" y="400" rx="4" ry="4" width="750" height="12" />
+      <rect x="0" y="420" rx="4" ry="4" width="650" height="12" />
+      <rect x="0" y="440" rx="4" ry="4" width="650" height="12" />
+      <rect x="0" y="460" rx="4" ry="4" width="500" height="12" />
+      <rect x="0" y="500" rx="4" ry="4" width="750" height="12" />
+      <rect x="0" y="520" rx="4" ry="4" width="600" height="12" />
+      <rect x="0" y="540" rx="4" ry="4" width="600" height="12" />
+    </ContentLoader>
   </div>
 
   <div class="flex flex-col" v-if="loadStatus === 'tag'">
-    <div class="animate-pulse bg-gray-300 w-4/5 h-32 m-5"></div>
+    <ContentLoader viewBox="0 0 500 150" height="150" width="500">
+      <rect x="20" y="20" rx="8" ry="8" width="460" height="120" />
+    </ContentLoader>
   </div>
 
   <div
     class="flex flex-col justify-center items-center gap-5"
     v-if="loadStatus === 'user'"
   >
-    <div class="animate-pulse bg-gray-300 w-32 h-32 rounded-full m-5"></div>
-    <div class="animate-pulse bg-gray-300 w-1/7 h-12 rounded-lg"></div>
-    <div class="flex flex-row w-full justify-center items-center gap-5">
-      <div class="animate-pulse bg-gray-300 w-1/9 h-5 rounded-full"></div>
-      <div class="animate-pulse bg-gray-300 w-1/9 h-5 rounded-lg"></div>
-    </div>
+    <ContentLoader viewBox="0 0 400 200" height="200" width="400">
+      <!-- avatar -->
+      <circle cx="200" cy="60" r="60" />
+
+      <!-- username -->
+      <rect x="120" y="140" rx="6" ry="6" width="160" height="20" />
+
+      <!-- stats -->
+      <rect x="120" y="170" rx="10" ry="10" width="70" height="15" />
+      <rect x="210" y="170" rx="6" ry="6" width="70" height="15" />
+    </ContentLoader>
   </div>
 
   <div class="" v-if="loadStatus !== 'article'">
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-15 p-5">
-      <div v-for="value in gridLength" class="">
-        <div class="flex flex-row gap-2 w-full">
-          <div class="animate-pulse bg-gray-300 w-18 h-18 rounded-lg"></div>
-          <div class="flex flex-col w-full gap-2">
-            <div class="animate-pulse bg-gray-300 w-4/5 h-5 rounded-lg"></div>
-            <div class="animate-pulse bg-gray-300 w-5/6 h-20 rounded-lg"></div>
-            <div class="flex flex-row justify-between w-4/5">
-              <div class="animate-pulse bg-gray-300 w-1/6 h-5 rounded-lg"></div>
-              <div class="animate-pulse bg-gray-300 w-1/6 h-5 rounded-lg"></div>
-              <div class="animate-pulse bg-gray-300 w-1/6 h-5 rounded-lg"></div>
-              <div class="animate-pulse bg-gray-300 w-1/6 h-5 rounded-lg"></div>
-            </div>
-            <div class="flex flex-row justify-between w-5/6">
-              <div class="animate-pulse bg-gray-300 w-1/6 h-5 rounded-lg"></div>
-              <div class="animate-pulse bg-gray-300 w-1/6 h-5 rounded-lg"></div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <ContentLoader
+        v-for="(_, index) in gridLength"
+        :key="index"
+        viewBox="0 0 400 160"
+        height="160"
+        width="400"
+      >
+        <!-- avatar -->
+        <rect x="0" y="0" rx="5" ry="5" width="60" height="60" />
+
+        <!-- title -->
+        <rect x="70" y="10" rx="4" ry="4" width="250" height="10" />
+
+        <!-- subtitle -->
+        <rect x="70" y="30" rx="4" ry="4" width="180" height="10" />
+
+        <!-- body -->
+        <rect x="0" y="80" rx="4" ry="4" width="350" height="12" />
+        <rect x="0" y="100" rx="4" ry="4" width="300" height="12" />
+      </ContentLoader>
     </div>
   </div>
 </template>

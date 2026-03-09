@@ -42,9 +42,7 @@ export const useArticleStore = defineStore('article', {
     },
     actions: {
         fetchArticles(loadMore: boolean = false) {
-            if (this.isLoading || !this.hasMore) return
-
-            this.isLoading = true
+            if (!this.hasMore) return
             return new Promise((resolve, reject) => {
                 let url = `https://dev.to/api/articles?page=${this.page}&per_page=12`
                 if (this.filterType === 'new') {
@@ -58,25 +56,22 @@ export const useArticleStore = defineStore('article', {
                     .then((response) => {
                         setTimeout(() => {
                             const data = response.data
-                            if (loadMore===true) {
-                                if (data.length === 0) {
-                                    this.hasMore = false
-                                } else {
-                                    this.articles.push(...data)
-                                }
+                            if (data.length < 0) {
+                                this.hasMore = false
                             } else {
-                                this.articles = data
+                                console.log(data.isArray)
+                                if (Array.isArray(data))
+                                    this.articles.push(...data)
                             }
-                            this.page++
+                            resolve(response)
                         }, 1000)
 
-                        resolve(response)
                     })
                     .catch((err) => {
                         reject(err)
                     })
                     .finally(() => {
-                        this.isLoading = false
+                        this.page++
                         console.log(this.articles)
                     })
             })
@@ -114,31 +109,33 @@ export const useArticleStore = defineStore('article', {
                 )
             }
         },
-        fetchUserArticles( user: any, loadMore: boolean = false ) {
+        fetchUserArticles(user: any, loadMore: boolean = false) {
+            if (!this.hasMore) return
             return new Promise((resolve, reject) => {
                 let url = `https://dev.to/api/articles?username=${user}&page=${this.page}&per_page=12`
                 if (this.filterType === 'new') {
                     url = `https://dev.to/api/articles?username=${user}&page=${this.page}&per_page=12&state=fresh`
                 }
-                else if (this.filterType === "top") {
-                    url = `https://dev.to/api/articles?username=${user}&page=${this.page}&per_page=12&top=7`
+                else if (this.filterType === 'top') {
+                    url = `https://dev.to/api/articles?username=${user}&page=${this.page}&per_page=12&top=30`
                 }
                 axios
                     .get(url)
                     .then((response) => {
                         setTimeout(() => {
                             const data = response.data
-                            if (loadMore===true) {
+                            if (loadMore === true) {
                                 if (data.length === 0) {
                                     this.hasMore = false
+                                    this.isLoading = false
+                                    return
                                 } else {
                                     this.articles.push(...data)
                                 }
                             } else {
                                 this.articles = data
+                                this.currentUserInformation = data[0]?.user
                             }
-                            this.currentUserInformation = data[0]?.user
-                            this.page++
                         }, 1000)
                         resolve(response)
                     })
@@ -147,11 +144,13 @@ export const useArticleStore = defineStore('article', {
                     })
                     .finally(() => {
                         this.isLoading = false
+                        this.page++
                         console.log(this.articles)
                     })
             })
         },
-        fetchTagArticles(tag: any, loadMore: boolean = false ) {
+        fetchTagArticles(tag: any, loadMore: boolean = false) {
+            if (!this.hasMore) return
             return new Promise((resolve, reject) => {
                 let url = `https://dev.to/api/articles?tag=${tag}&page=${this.page}&per_page=12`
                 if (this.filterType === 'new') {
@@ -165,28 +164,36 @@ export const useArticleStore = defineStore('article', {
                     .then((response) => {
                         setTimeout(() => {
                             const data = response.data
-                            if (loadMore===true) {
+                            if (loadMore === true) {
                                 if (data.length === 0) {
                                     this.hasMore = false
                                 } else {
                                     this.articles.push(...data)
                                 }
                             } else {
-                                this.articles=[]
                                 this.articles = data
                             }
-                            this.page++
+                            resolve(response)
                         }, 1000)
-                        resolve(response)
                     })
                     .catch((err) => {
                         reject(err)
                     })
                     .finally(() => {
                         this.isLoading = false
+                        this.page++
                         console.log(this.articles)
                     })
             })
+        },
+
+        resetFeaturesFunction() {
+            this.page = 1
+            this.filterType = ''
+            this.hasMore = true
+            this.articles = []
+            this.currentUserInformation.profile_image = ''
+            this.currentUserInformation.profile_image_90 = ''
         }
     }
 })

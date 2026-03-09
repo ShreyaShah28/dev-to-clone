@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useArticleStore } from '../stores/article'
-
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -19,9 +18,9 @@ watch(currentFilter, () => {
   articleStore.page = 1
   articleStore.articles = []
   articleStore.isLoading = true
-  if (route.name === 'home') articleStore.fetchArticles()
-  else if (route.name === 'tag') articleStore.fetchTagArticles(route.params.tag)
-  else if (route.name === 'user') articleStore.filterUsers()
+  if (route?.name === 'home') articleStore.fetchArticles()
+  else if (route?.name === 'tag') articleStore.fetchTagArticles(route.params.tag)
+  else if (route?.name === 'user') articleStore.fetchUserArticles(route.params.username)
   articleStore.isLoading = false
 })
 </script>

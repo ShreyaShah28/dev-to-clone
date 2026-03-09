@@ -61,7 +61,6 @@ loadInitialData()
               </router-link>
             </div>
           </div>
-          <!-- <div v-html="parsedMarkdown" class="prose dark:prose-invert"></div>-->
           <VMarkdownView :mode="mode" :content="parsedMarkdown"></VMarkdownView>
         </div>
       </div>

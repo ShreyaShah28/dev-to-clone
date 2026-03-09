@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useArticleStore } from '../stores/article'
 import ArticleCard from '../components/ArticleCard.vue'
+import LoadingView from './LoadingView.vue'
 
 const articleStore = useArticleStore()
 const loadTrigger = ref<HTMLElement | null>(null)
-const loading = computed(() => articleStore.isLoading)
 
 function setupObserver() {
   const observer = new IntersectionObserver(async (entries) => {
-    if (entries[0].isIntersecting) {
-      await articleStore.fetchArticles(true)
+    if (entries[0].isIntersecting && articleStore.page !== 1) {
+      await articleStore.fetchArticles()
     }
   })
 
@@ -20,21 +20,22 @@ function setupObserver() {
 }
 
 onMounted(async () => {
-  articleStore.page = 1
-  articleStore.filterType = ''
-  articleStore.articles = []
+  articleStore.isLoading = true
+  articleStore.resetFeaturesFunction()
+  await articleStore.fetchArticles()
+  console.log(articleStore.articles)
   setupObserver()
+  articleStore.isLoading = false
 })
 </script>
 <template>
   <div class="">
+    <LoadingView v-if="articleStore.isLoading" />
     <div class="flex flex-col" v-if="articleStore.filteredArticles.length !== 0">
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 p-5">
         <ArticleCard />
       </div>
     </div>
-    <div v-if="loading" class="loading">Loading more posts...</div>
-
     <div ref="loadTrigger" class="h-10"></div>
   </div>
 </template>

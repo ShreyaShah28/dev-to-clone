@@ -13,7 +13,7 @@ const loading = computed(() => articleStore.isLoading)
 
 function setupObserver() {
   const observer = new IntersectionObserver(async (entries) => {
-    if (entries[0].isIntersecting) {
+    if (entries[0].isIntersecting && articleStore.page !== 1) {
       await articleStore.fetchUserArticles(route.params.username, true)
     }
   })
@@ -24,10 +24,11 @@ function setupObserver() {
 }
 
 onMounted(async () => {
-  articleStore.page = 1
-  articleStore.filterType = ''
-  articleStore.articles = []
+  articleStore.isLoading = true
+  articleStore.resetFeaturesFunction()
+  await articleStore.fetchUserArticles(route.params.username, false)
   setupObserver()
+  articleStore.isLoading = false
 })
 </script>
 
@@ -65,8 +66,6 @@ onMounted(async () => {
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 p-5">
       <ArticleCard />
     </div>
-    <div v-if="loading" class="loading">Loading more posts...</div>
-
     <div ref="loadTrigger" class="h-10"></div>
   </div>
 </template>
