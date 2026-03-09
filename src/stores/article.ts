@@ -117,7 +117,7 @@ export const useArticleStore = defineStore('article', {
                     url = `https://dev.to/api/articles?username=${user}&page=${this.page}&per_page=12&state=fresh`
                 }
                 else if (this.filterType === 'top') {
-                    url = `https://dev.to/api/articles?username=${user}&page=${this.page}&per_page=12&top=30`
+                    url = `https://dev.to/api/articles?username=${user}&page=${this.page}&per_page=12&top=7`
                 }
                 axios
                     .get(url)
@@ -136,8 +136,9 @@ export const useArticleStore = defineStore('article', {
                                 this.articles = data
                                 this.currentUserInformation = data[0]?.user
                             }
+                            this.filterUsers()
+                            resolve(response)
                         }, 1000)
-                        resolve(response)
                     })
                     .catch((err) => {
                         reject(err)
