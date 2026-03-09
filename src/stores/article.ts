@@ -127,7 +127,6 @@ export const useArticleStore = defineStore('article', {
                             if (loadMore === true) {
                                 if (data.length === 0) {
                                     this.hasMore = false
-                                    this.isLoading = false
                                     return
                                 } else {
                                     this.articles.push(...data)
@@ -138,13 +137,12 @@ export const useArticleStore = defineStore('article', {
                             }
                             this.filterUsers()
                             resolve(response)
-                        }, 1000)
+                        }, 3000)
                     })
                     .catch((err) => {
                         reject(err)
                     })
                     .finally(() => {
-                        this.isLoading = false
                         this.page++
                         console.log(this.articles)
                     })
