@@ -7,7 +7,7 @@ const route = useRoute()
 
 <template>
   <HeaderView
-    class="sticky top-0 z-50 bg-white shadow h-32 sm:h-18"
+    class="sticky top-0 z-50 bg-white shadow h-36 md:h-18"
     v-if="route.name !== 'article'"
   />
   <div class="h-full w-full"><router-view /></div>

@@ -58,7 +58,7 @@ onMounted(async () => {
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 p-5">
       <ArticleCard />
     </div>
-    <div ref="loadTrigger" class="h-10 flex flex-row justify-center">
+    <div ref="loadTrigger" class="flex flex-row justify-center">
       <span v-if="articleStore.hasMore"><LoadingCard /></span>
     </div>
   </div>

@@ -20,11 +20,13 @@ const articles = computed(() => articleStore.filteredArticles)
       </router-link>
       <div class="flex flex-col justify-between ml-8">
         <router-link :to="`/article/${article?.id}`">
-          <p class="p-2 pr-8 text-3xl font-semibold hover:text-blue-800/90">
+          <p
+            class="p-2 pr-8 text-xl sm:text-2xl md:text-3xl font-semibold hover:text-blue-800/90"
+          >
             {{ article?.title }}
           </p>
         </router-link>
-        <div class="flex flex-wrap gap-2 sm:gap-5">
+        <div class="flex flex-wrap gap-2 sm:gap-5 mb-3">
           <div v-for="(tag, index) in article?.tag_list" :key="tag" class="">
             <router-link :to="`/tag/${tag}`">
               <button

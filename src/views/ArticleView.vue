@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { VMarkdownView } from 'vue3-markdown'
 import 'vue3-markdown/dist/vue3-markdown.css'
 import { useArticleStore } from '../stores/article'
@@ -22,15 +22,19 @@ async function loadInitialData() {
 }
 
 loadInitialData()
+
+onMounted(() => {
+  window.scrollTo(0, 0)
+})
 </script>
 
 <template>
   <div class="flex flex-col justify-center items-center">
     <LoadingView v-if="articleStore.isLoading === true" />
     <div v-else class="w-full md:w-3/4 xl:w-1/2">
-      <div class="p-10 bg-white">
+      <div class="bg-white">
         <img :src="article.cover_image" alt="" class="w-full" />
-        <div class="px-10 py-5">
+        <div class="px-5 sm:px-10 py-5">
           <router-link :to="`/user/${article.user.username}`">
             <div class="flex flex-row items-center gap-3">
               <img
@@ -48,7 +52,9 @@ loadInitialData()
               </div>
             </div>
           </router-link>
-          <p class="text-5xl font-bold py-5">{{ article.title }}</p>
+          <p class="text-2xl sm:text-3xl md:text-4xl font-bold py-5">
+            {{ article.title }}
+          </p>
           <div class="flex flex-wrap gap-5">
             <div v-for="(tag, index) in article.tags" class="">
               <router-link :to="`/tag/${tag}`">

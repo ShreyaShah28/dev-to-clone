@@ -10,10 +10,10 @@ const loadStatus = computed(() => route.name)
 </script>
 <template>
   <div
-    class="flex flex-col justify-center items-center gap-5 w-full"
+    class="flex flex-col justify-center items-center gap-5 w-full h-fit"
     v-if="loadStatus === 'article'"
   >
-    <ContentLoader viewBox="0 0 800 600" height="600" width="800">
+    <ContentLoader viewBox="0 0 800 400" height="400" width="800">
       <!-- cover image -->
       <rect x="0" y="0" rx="8" ry="8" width="800" height="220" />
 
