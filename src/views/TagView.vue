@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 import { useArticleStore } from '../stores/article'
 import { useRoute } from 'vue-router'
 import ArticleCard from '../components/ArticleCard.vue'
@@ -28,9 +28,10 @@ watch(
     articleStore.resetFeaturesFunction()
     // if (newTag) {
     await articleStore.fetchTagArticles(route.params.tag, true)
-    setupObserver()
     // }
     articleStore.isLoading = false
+    await nextTick()
+    setupObserver()
   },
   { immediate: true } // runs first time also
 )

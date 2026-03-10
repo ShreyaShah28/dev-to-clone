@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { nextTick, onMounted, ref } from 'vue'
 import { useArticleStore } from '../stores/article'
 import ArticleCard from '../components/ArticleCard.vue'
 import LoadingView from './LoadingView.vue'
@@ -23,9 +23,10 @@ onMounted(async () => {
   articleStore.isLoading = true
   articleStore.resetFeaturesFunction()
   await articleStore.fetchArticles()
-  console.log(articleStore.articles)
-  setupObserver()
   articleStore.isLoading = false
+  console.log(articleStore.articles)
+  await nextTick
+  setupObserver()
 })
 </script>
 <template>
