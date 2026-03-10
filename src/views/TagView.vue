@@ -4,6 +4,7 @@ import { useArticleStore } from '../stores/article'
 import { useRoute } from 'vue-router'
 import ArticleCard from '../components/ArticleCard.vue'
 import LoadingView from './LoadingView.vue'
+import LoadingCard from '../components/LoadingCard.vue'
 
 const route = useRoute()
 const articleStore = useArticleStore()
@@ -57,8 +58,8 @@ onMounted(async () => {
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 p-5">
       <ArticleCard />
     </div>
-    <div ref="loadTrigger" class="h-10 text-center">
-      <span v-if="articleStore.hasMore">Loading...</span>
+    <div ref="loadTrigger" class="h-10 flex flex-row justify-center">
+      <span v-if="articleStore.hasMore"><LoadingCard /></span>
     </div>
   </div>
 </template>

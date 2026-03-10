@@ -4,6 +4,7 @@ import { useArticleStore } from '../stores/article'
 import { useRoute } from 'vue-router'
 import ArticleCard from '../components/ArticleCard.vue'
 import LoadingView from './LoadingView.vue'
+import LoadingCard from '../components/LoadingCard.vue'
 import { nextTick } from 'vue'
 
 const route = useRoute()
@@ -51,7 +52,10 @@ onUnmounted(() => {
         class="flex justify-center bg-linear-to-b from-blue-700 from-50% to-white to-50% p-5"
       >
         <div class="rounded-full bg-white border-8 border-blue-700 overflow-hidden">
-          <img :src="userInformation.profile_image" class="w-40 h-40" />
+          <img
+            :src="userInformation?.profile_image || userInformation?.profile_image_90"
+            class="w-40 h-40"
+          />
         </div>
       </div>
 
@@ -84,8 +88,8 @@ onUnmounted(() => {
     </div>
 
     <!-- Infinite scroll trigger -->
-    <div ref="loadTrigger" class="h-10 text-center">
-      <span v-if="articleStore.hasMore">Loading...</span>
+    <div ref="loadTrigger" class="h-10 flex flex-row justify-center">
+      <span v-if="articleStore.hasMore"><LoadingCard /></span>
     </div>
   </div>
 </template>

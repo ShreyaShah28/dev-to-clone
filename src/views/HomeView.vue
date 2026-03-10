@@ -3,6 +3,7 @@ import { nextTick, onMounted, ref } from 'vue'
 import { useArticleStore } from '../stores/article'
 import ArticleCard from '../components/ArticleCard.vue'
 import LoadingView from './LoadingView.vue'
+import LoadingCard from '../components/LoadingCard.vue'
 
 const articleStore = useArticleStore()
 const loadTrigger = ref<HTMLElement | null>(null)
@@ -37,6 +38,8 @@ onMounted(async () => {
         <ArticleCard />
       </div>
     </div>
-    <div ref="loadTrigger" class="h-10"></div>
+    <div ref="loadTrigger" class="h-10 flex flex-row justify-center">
+      <span v-if="articleStore.hasMore"><LoadingCard /></span>
+    </div>
   </div>
 </template>
