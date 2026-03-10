@@ -12,7 +12,7 @@ export const useArticleStore = defineStore('article', {
         page: 1,
         searchQuery: '',
         urlString: '',
-        articles: [],
+        articles: [] as any[],
         currentArticle: {
             ...currentArticle
         },
@@ -59,7 +59,6 @@ export const useArticleStore = defineStore('article', {
                             if (data.length < 0) {
                                 this.hasMore = false
                             } else {
-                                console.log(data.isArray)
                                 if (Array.isArray(data))
                                     this.articles.push(...data)
                             }
@@ -109,7 +108,7 @@ export const useArticleStore = defineStore('article', {
                 )
             }
         },
-        fetchUserArticles(user: any, loadMore: boolean = false) {
+        fetchUserArticles(user: any) {
             if (!this.hasMore) return
             return new Promise((resolve, reject) => {
                 let url = `https://dev.to/api/articles?username=${user}&page=${this.page}&per_page=12`
@@ -124,20 +123,17 @@ export const useArticleStore = defineStore('article', {
                     .then((response) => {
                         setTimeout(() => {
                             const data = response.data
-                            if (loadMore === true) {
-                                if (data.length === 0) {
-                                    this.hasMore = false
-                                    return
-                                } else {
-                                    this.articles.push(...data)
-                                }
+                            if (data.length < 0) {
+                                this.hasMore = false
                             } else {
-                                this.articles = data
-                                this.currentUserInformation = data[0]?.user
+                                if (Array.isArray(data))
+                                    this.articles = [...this.articles, ...data]
                             }
+                            this.currentUserInformation = data[0]?.user
+
                             this.filterUsers()
                             resolve(response)
-                        }, 3000)
+                        }, 1000)
                     })
                     .catch((err) => {
                         reject(err)
@@ -179,7 +175,6 @@ export const useArticleStore = defineStore('article', {
                         reject(err)
                     })
                     .finally(() => {
-                        this.isLoading = false
                         this.page++
                         console.log(this.articles)
                     })

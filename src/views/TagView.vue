@@ -36,11 +36,11 @@ watch(
 )
 
 onMounted(async () => {
-  articleStore.page = 1
-  articleStore.filterType = ''
-  articleStore.articles = []
+  articleStore.isLoading = true
+  articleStore.resetFeaturesFunction()
   await articleStore.fetchTagArticles(route.params.tag, true)
   setupObserver()
+  articleStore.isLoading = false
 })
 </script>
 
@@ -55,6 +55,9 @@ onMounted(async () => {
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 p-5">
       <ArticleCard />
+    </div>
+    <div ref="loadTrigger" class="h-10 text-center">
+      <span v-if="articleStore.hasMore">Loading...</span>
     </div>
   </div>
 </template>
